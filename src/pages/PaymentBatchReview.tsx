@@ -1,20 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Settings, Database, Shield, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { BatchTransaction, Service } from "@/types/batch";
 import { generateBatchData } from "@/utils/batchUtils";
+import { services } from "@/constants/services";
 import BatchHeader from "@/components/batch/BatchHeader";
 import SearchAndActions from "@/components/batch/SearchAndActions";
 import TransactionTable from "@/components/batch/TransactionTable";
 import NavigationButtons from "@/components/batch/NavigationButtons";
-
-const services: Service[] = [
-  { id: "service1", name: "Service1", icon: Settings },
-  { id: "service2", name: "Service2", icon: Database },
-  { id: "service3", name: "Service3", icon: Shield },
-  { id: "service4", name: "Service4", icon: Globe },
-];
 
 const PaymentBatchReview = () => {
   const location = useLocation();
