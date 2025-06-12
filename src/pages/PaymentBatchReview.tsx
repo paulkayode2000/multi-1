@@ -228,7 +228,7 @@ const PaymentBatchReview = () => {
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Review payment batch</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-4">Review Payment Batch</h1>
           
           {/* Selected Service Display */}
           <div className="flex items-center justify-center space-x-3 mb-4">
@@ -394,7 +394,10 @@ const PaymentBatchReview = () => {
         {/* Navigation Buttons */}
         <div className="flex justify-between">
           <Button variant="outline" className="flex items-center space-x-2" asChild>
-            <Link to="/transaction-references" state={{ selectedService: selectedServiceId }}>
+            <Link to="/transaction-references" state={{ 
+              selectedService: selectedServiceId,
+              transactionIds: batchData.map(t => t.referenceId)
+            }}>
               <ArrowLeft className="h-4 w-4" />
               <span>Back</span>
             </Link>

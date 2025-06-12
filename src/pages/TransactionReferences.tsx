@@ -16,13 +16,23 @@ const TransactionReferences = () => {
   // Get selected service from navigation state
   const selectedServiceId = location.state?.selectedService;
   const selectedService = services.find(s => s.id === selectedServiceId);
+  const incomingTransactionIds = location.state?.transactionIds || [];
 
-  // Redirect to home if no service selected
+  // Redirect to home if no service selected and load incoming transaction IDs
   useEffect(() => {
     if (!selectedService) {
       navigate("/");
+    } else if (incomingTransactionIds.length > 0) {
+      // Recreate transaction objects from incoming IDs
+      const recreatedTransactions = incomingTransactionIds.map((refId, index) => ({
+        id: `restored_${index}_${refId}`,
+        value: refId,
+        isValid: true,
+        isValidating: false,
+      }));
+      setTransactionIds(recreatedTransactions);
     }
-  }, [selectedService, navigate]);
+  }, [selectedService, navigate, incomingTransactionIds]);
 
   const handleAddTransactionId = (newId: TransactionId) => {
     setTransactionIds(prev => [...prev, newId]);
