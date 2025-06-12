@@ -4,10 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Settings, Database, Shield, Globe } from "lucide-react";
+import { ArrowLeft, ArrowRight, Database, Shield, Globe } from "lucide-react";
+
+import NISLogo from "@/components/icons/NISLogo";
 
 const services = [
-  { id: "service1", name: "Service1", icon: Settings },
+  { id: "service1", name: "Nigeria Immigration Service (NIS)", icon: NISLogo },
   { id: "service2", name: "Service2", icon: Database },
   { id: "service3", name: "Service3", icon: Shield },
   { id: "service4", name: "Service4", icon: Globe },
