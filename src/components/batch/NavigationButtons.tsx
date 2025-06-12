@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { BatchTransaction } from "@/types/batch";
 
@@ -10,6 +10,14 @@ interface NavigationButtonsProps {
 }
 
 const NavigationButtons = ({ selectedServiceId, batchData, totalSum }: NavigationButtonsProps) => {
+  const navigate = useNavigate();
+
+  const handleProceedToPayment = () => {
+    // Store selected service ID in localStorage for the payment page
+    localStorage.setItem('selectedServiceId', selectedServiceId);
+    navigate('/make-payment', { state: { totalAmount: totalSum } });
+  };
+
   return (
     <div className="flex justify-between">
       <Button variant="outline" className="flex items-center space-x-2" asChild>
@@ -24,12 +32,10 @@ const NavigationButtons = ({ selectedServiceId, batchData, totalSum }: Navigatio
       <Button 
         className="flex items-center space-x-2" 
         disabled={batchData.length === 0}
-        asChild
+        onClick={handleProceedToPayment}
       >
-        <Link to="/make-payment" state={{ totalAmount: totalSum }}>
-          <span>Proceed to Payment</span>
-          <ArrowRight className="h-4 w-4" />
-        </Link>
+        <span>Proceed to Payment</span>
+        <ArrowRight className="h-4 w-4" />
       </Button>
     </div>
   );

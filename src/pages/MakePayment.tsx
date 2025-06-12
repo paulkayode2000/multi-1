@@ -27,14 +27,21 @@ const MakePayment = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedServiceId, setSelectedServiceId] = useState<string>("");
 
-  // Load total amount from localStorage or navigation state
+  // Load total amount and service info from localStorage or navigation state
   useEffect(() => {
     const loadPaymentData = () => {
       try {
         // Try to get amount from navigation state first
         const navigationAmount = location.state?.totalAmount;
         
+        // Get selected service ID from localStorage (stored by NavigationButtons in review page)
+        const storedSelectedService = localStorage.getItem('selectedServiceId');
+        if (storedSelectedService) {
+          setSelectedServiceId(storedSelectedService);
+        }
+
         if (navigationAmount) {
           setTotalAmount(navigationAmount);
           setIsLoading(false);
@@ -177,7 +184,10 @@ const MakePayment = () => {
         {/* Back Button */}
         <div className="flex justify-center">
           <Button variant="outline" className="flex items-center space-x-2" asChild>
-            <Link to="/payment-batch-review">
+            <Link 
+              to="/payment-batch-review" 
+              state={{ selectedService: selectedServiceId }}
+            >
               <ArrowLeft className="h-4 w-4" />
               <span>Back to Review</span>
             </Link>
