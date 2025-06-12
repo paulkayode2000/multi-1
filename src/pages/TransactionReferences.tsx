@@ -6,6 +6,7 @@ import ServiceHeader from "@/components/transaction-references/ServiceHeader";
 import TransactionIdInput from "@/components/transaction-references/TransactionIdInput";
 import TransactionIdsList from "@/components/transaction-references/TransactionIdsList";
 import NavigationButtons from "@/components/transaction-references/NavigationButtons";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 const TransactionReferences = () => {
   const location = useLocation();
@@ -57,8 +58,8 @@ const TransactionReferences = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <AppLayout>
+      <div className="max-w-2xl mx-auto">
         <ServiceHeader 
           selectedService={selectedService} 
           transactionCount={transactionIds.length}
@@ -82,7 +83,7 @@ const TransactionReferences = () => {
           selectedServiceId={selectedServiceId}
         />
       </div>
-    </div>
+    </AppLayout>
   );
 };
 

@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, CreditCard, Building2, Smartphone, University } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 const paymentMethods = [
   { id: "card", name: "Card", icon: CreditCard },
@@ -98,18 +99,20 @@ const MakePayment = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading payment details...</p>
+      <AppLayout showProgress={false}>
+        <div className="flex items-center justify-center min-h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading payment details...</p>
+          </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <AppLayout>
+      <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-6">Make Payment</h1>
@@ -194,7 +197,7 @@ const MakePayment = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 

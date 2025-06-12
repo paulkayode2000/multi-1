@@ -8,6 +8,7 @@ import BatchHeader from "@/components/batch/BatchHeader";
 import SearchAndActions from "@/components/batch/SearchAndActions";
 import TransactionTable from "@/components/batch/TransactionTable";
 import NavigationButtons from "@/components/batch/NavigationButtons";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 const PaymentBatchReview = () => {
   const location = useLocation();
@@ -135,18 +136,20 @@ const PaymentBatchReview = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading batch data...</p>
+      <AppLayout showProgress={false}>
+        <div className="flex items-center justify-center min-h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading batch data...</p>
+          </div>
         </div>
-      </div>
+      </AppLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <AppLayout>
+      <div className="max-w-6xl mx-auto">
         <BatchHeader selectedService={selectedService} transactionCount={batchData.length} />
         
         <SearchAndActions 
@@ -171,7 +174,7 @@ const PaymentBatchReview = () => {
           totalSum={totalSum}
         />
       </div>
-    </div>
+    </AppLayout>
   );
 };
 

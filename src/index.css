@@ -98,6 +98,25 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-roboto;
+  }
+  
+  /* Smooth transitions for theme switching */
+  * {
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  }
+  
+  /* Typography improvements */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium;
+  }
+  
+  /* Page flow container */
+  .page-flow {
+    @apply min-h-screen bg-background;
+  }
+  
+  .content-container {
+    @apply container mx-auto px-4 py-6 max-w-4xl;
   }
 }
