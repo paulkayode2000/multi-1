@@ -377,7 +377,7 @@ const PaymentBatchReview = () => {
                     {/* Total Row */}
                     <TableRow className="border-t-2 bg-muted/30 font-medium">
                       <TableCell colSpan={5} className="text-right font-bold">
-                        Total Sum:
+                        Total Payment:
                       </TableCell>
                       <TableCell className="text-right text-lg font-bold text-primary">
                         {formatCurrency(totalSum)}
