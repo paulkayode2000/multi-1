@@ -405,9 +405,12 @@ const PaymentBatchReview = () => {
           <Button 
             className="flex items-center space-x-2" 
             disabled={batchData.length === 0}
+            asChild
           >
-            <span>Proceed to Payment</span>
-            <ArrowRight className="h-4 w-4" />
+            <Link to="/make-payment" state={{ totalAmount: totalSum }}>
+              <span>Proceed to Payment</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </Button>
         </div>
       </div>
