@@ -142,6 +142,17 @@ const TransactionReferences = () => {
 
   const validTransactionIds = transactionIds.filter(tid => tid.isValid);
 
+  const handleSaveAndContinue = () => {
+    // Store valid transaction IDs in localStorage for the next page
+    const validIds = validTransactionIds.map(tid => tid.value);
+    localStorage.setItem('validTransactionIds', JSON.stringify(validIds));
+    
+    // Navigate to payment batch review page
+    navigate('/payment-batch-review', { 
+      state: { selectedService: selectedServiceId } 
+    });
+  };
+
   if (!selectedService) {
     return null;
   }
@@ -247,6 +258,7 @@ const TransactionReferences = () => {
           <Button 
             className="flex items-center space-x-2" 
             disabled={validTransactionIds.length === 0}
+            onClick={handleSaveAndContinue}
           >
             <span>Save & Continue</span>
             <ArrowRight className="h-4 w-4" />
