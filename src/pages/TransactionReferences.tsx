@@ -248,7 +248,7 @@ const TransactionReferences = () => {
             className="flex items-center space-x-2" 
             disabled={validTransactionIds.length === 0}
           >
-            <span>Continue</span>
+            <span>Save & Continue</span>
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
