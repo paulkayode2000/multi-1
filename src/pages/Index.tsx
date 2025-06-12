@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -14,6 +15,15 @@ const services = [
 
 const Index = () => {
   const [selectedService, setSelectedService] = useState("");
+  const navigate = useNavigate();
+
+  const handleGetStarted = () => {
+    if (selectedService) {
+      navigate("/transaction-references", { 
+        state: { selectedService } 
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -60,6 +70,7 @@ const Index = () => {
           <Button 
             className="flex items-center space-x-2" 
             disabled={!selectedService}
+            onClick={handleGetStarted}
           >
             <span>Get started</span>
             <ArrowRight className="h-4 w-4" />
