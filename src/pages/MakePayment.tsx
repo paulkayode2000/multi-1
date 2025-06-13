@@ -13,7 +13,7 @@ import { validateAndSanitizeJsonData, validateAmount } from "@/lib/dataValidatio
 const paymentMethods = [
   { id: "card", name: "Card", icon: CreditCard },
   { id: "direct-debit", name: "Direct Debit", icon: University },
-  { id: "bank", name: "Bank", icon: Building2 },
+  { id: "bank", name: "Bank Transfer", icon: Building2 },
   { id: "ussd", name: "USSD", icon: Smartphone },
 ];
 
