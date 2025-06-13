@@ -4,6 +4,8 @@ import { useToast } from "@/hooks/use-toast";
 import { BatchTransaction, Service } from "@/types/batch";
 import { generateBatchData } from "@/utils/batchUtils";
 import { services } from "@/constants/services";
+import { secureStorage } from "@/lib/secureStorage";
+import { validateTransactionId, validateAndSanitizeJsonData } from "@/lib/dataValidation";
 import BatchHeader from "@/components/batch/BatchHeader";
 import SearchAndActions from "@/components/batch/SearchAndActions";
 import TransactionTable from "@/components/batch/TransactionTable";
@@ -26,37 +28,43 @@ const PaymentBatchReview = () => {
 
   // Load and generate batch data
   useEffect(() => {
-    const loadBatchData = () => {
+    const loadBatchData = async () => {
       try {
-        // Get transaction IDs from localStorage
-        const storedTransactionIds = localStorage.getItem('validTransactionIds');
+        // Get transaction IDs from secure storage
+        const storedTransactionIds = await secureStorage.getItem('validTransactionIds');
         if (!storedTransactionIds) {
           navigate('/transaction-references');
           return;
         }
 
         const transactionIds = JSON.parse(storedTransactionIds);
-        if (transactionIds.length === 0) {
+        
+        // Validate transaction IDs
+        const validIds = transactionIds.filter((id: string) => validateTransactionId(id));
+        if (validIds.length === 0) {
           navigate('/transaction-references');
           return;
         }
 
         // Check if we already have batch data for these IDs
-        const storedBatchData = localStorage.getItem('batchData');
+        const storedBatchData = await secureStorage.getItem('batchData');
         if (storedBatchData) {
           const parsedData = JSON.parse(storedBatchData);
+          const sanitizedData = validateAndSanitizeJsonData(parsedData);
+          
           // Verify the data matches current transaction IDs
-          if (parsedData.length === transactionIds.length) {
-            setBatchData(parsedData);
+          if (sanitizedData.length === validIds.length) {
+            setBatchData(sanitizedData);
             setIsLoading(false);
             return;
           }
         }
 
         // Generate new batch data
-        const newBatchData = generateBatchData(transactionIds);
-        setBatchData(newBatchData);
-        localStorage.setItem('batchData', JSON.stringify(newBatchData));
+        const newBatchData = generateBatchData(validIds);
+        const sanitizedBatchData = validateAndSanitizeJsonData(newBatchData);
+        setBatchData(sanitizedBatchData);
+        await secureStorage.setItem('batchData', JSON.stringify(sanitizedBatchData));
         setIsLoading(false);
 
       } catch (error) {
@@ -118,16 +126,25 @@ const PaymentBatchReview = () => {
   };
 
   // Handle delete selected rows
-  const handleDeleteSelected = () => {
-    const remainingData = batchData.filter(transaction => !selectedRows.has(transaction.id));
-    setBatchData(remainingData);
-    localStorage.setItem('batchData', JSON.stringify(remainingData));
-    setSelectedRows(new Set());
-    
-    toast({
-      title: "Success",
-      description: `Deleted ${selectedRows.size} transaction(s)`,
-    });
+  const handleDeleteSelected = async () => {
+    try {
+      const remainingData = batchData.filter(transaction => !selectedRows.has(transaction.id));
+      const sanitizedData = validateAndSanitizeJsonData(remainingData);
+      setBatchData(sanitizedData);
+      await secureStorage.setItem('batchData', JSON.stringify(sanitizedData));
+      setSelectedRows(new Set());
+      
+      toast({
+        title: "Success",
+        description: `Deleted ${selectedRows.size} transaction(s)`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete transactions",
+        variant: "destructive",
+      });
+    }
   };
 
   if (!selectedService) {

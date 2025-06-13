@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { BatchTransaction } from "@/types/batch";
+import { secureStorage } from "@/lib/secureStorage";
+import { validateServiceId } from "@/lib/dataValidation";
 
 interface NavigationButtonsProps {
   selectedServiceId: string;
@@ -12,10 +14,19 @@ interface NavigationButtonsProps {
 const NavigationButtons = ({ selectedServiceId, batchData, totalSum }: NavigationButtonsProps) => {
   const navigate = useNavigate();
 
-  const handleProceedToPayment = () => {
-    // Store selected service ID in localStorage for the payment page
-    localStorage.setItem('selectedServiceId', selectedServiceId);
-    navigate('/make-payment', { state: { totalAmount: totalSum } });
+  const handleProceedToPayment = async () => {
+    try {
+      // Validate service ID before storing
+      if (!validateServiceId(selectedServiceId)) {
+        throw new Error('Invalid service ID');
+      }
+      
+      // Store selected service ID securely for the payment page
+      await secureStorage.setItem('selectedServiceId', selectedServiceId);
+      navigate('/make-payment', { state: { totalAmount: totalSum } });
+    } catch (error) {
+      console.error('Failed to store service ID:', error);
+    }
   };
 
   return (

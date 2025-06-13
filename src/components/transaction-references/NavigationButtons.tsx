@@ -2,6 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { TransactionId } from "@/types/transaction";
+import { secureStorage } from "@/lib/secureStorage";
+import { validateTransactionId } from "@/lib/dataValidation";
 
 interface NavigationButtonsProps {
   validTransactionIds: TransactionId[];
@@ -11,15 +13,27 @@ interface NavigationButtonsProps {
 const NavigationButtons = ({ validTransactionIds, selectedServiceId }: NavigationButtonsProps) => {
   const navigate = useNavigate();
 
-  const handleSaveAndContinue = () => {
-    // Store valid transaction IDs in localStorage for the next page
-    const validIds = validTransactionIds.map(tid => tid.value);
-    localStorage.setItem('validTransactionIds', JSON.stringify(validIds));
-    
-    // Navigate to payment batch review page
-    navigate('/payment-batch-review', { 
-      state: { selectedService: selectedServiceId } 
-    });
+  const handleSaveAndContinue = async () => {
+    try {
+      // Validate all transaction IDs before storing
+      const validIds = validTransactionIds
+        .map(tid => tid.value)
+        .filter(id => validateTransactionId(id));
+      
+      if (validIds.length === 0) {
+        throw new Error('No valid transaction IDs to save');
+      }
+      
+      // Store valid transaction IDs securely for the next page
+      await secureStorage.setItem('validTransactionIds', JSON.stringify(validIds));
+      
+      // Navigate to payment batch review page
+      navigate('/payment-batch-review', { 
+        state: { selectedService: selectedServiceId } 
+      });
+    } catch (error) {
+      console.error('Failed to save transaction IDs:', error);
+    }
   };
 
   return (

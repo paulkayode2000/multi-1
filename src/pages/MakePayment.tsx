@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, CreditCard, Building2, Smartphone, University } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { secureStorage } from "@/lib/secureStorage";
+import { validateAndSanitizeJsonData, validateAmount } from "@/lib/dataValidation";
 
 const paymentMethods = [
   { id: "card", name: "Card", icon: CreditCard },
@@ -30,34 +32,35 @@ const MakePayment = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedServiceId, setSelectedServiceId] = useState<string>("");
 
-  // Load total amount and service info from localStorage or navigation state
+  // Load total amount and service info from secure storage or navigation state
   useEffect(() => {
-    const loadPaymentData = () => {
+    const loadPaymentData = async () => {
       try {
         // Try to get amount from navigation state first
         const navigationAmount = location.state?.totalAmount;
         
-        // Get selected service ID from localStorage (stored by NavigationButtons in review page)
-        const storedSelectedService = localStorage.getItem('selectedServiceId');
+        // Get selected service ID from secure storage (stored by NavigationButtons in review page)
+        const storedSelectedService = await secureStorage.getItem('selectedServiceId');
         if (storedSelectedService) {
           setSelectedServiceId(storedSelectedService);
         }
 
-        if (navigationAmount) {
+        if (navigationAmount && validateAmount(navigationAmount)) {
           setTotalAmount(navigationAmount);
           setIsLoading(false);
           return;
         }
 
         // Fallback to calculating from batch data
-        const storedBatchData = localStorage.getItem('batchData');
+        const storedBatchData = await secureStorage.getItem('batchData');
         if (!storedBatchData) {
           navigate('/transaction-references');
           return;
         }
 
         const batchData = JSON.parse(storedBatchData);
-        const total = batchData.reduce((sum: number, transaction: any) => sum + transaction.subTotal, 0);
+        const sanitizedData = validateAndSanitizeJsonData(batchData);
+        const total = sanitizedData.reduce((sum: number, transaction: any) => sum + transaction.subTotal, 0);
         
         if (total === 0) {
           navigate('/payment-batch-review');
